@@ -22,22 +22,12 @@ public sealed class Test : MonoBehaviour
 
         if (_texture == null)
         {
-            _texture = new Texture2D(info.width, info.height);
+            _texture = new Texture2D(info.width, info.height, TextureFormat.R16, false)
+            { filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Clamp };
             GetComponent<MeshRenderer>().material.mainTexture = _texture;
         }
 
-        var ptr = (void*)info.data;
-        var offs = 0;
-
-        for (var y = 0; y < info.height; y++)
-        {
-            for (var x = 0; x < info.width; x++)
-            {
-                var b = UnsafeUtility.ReadArrayElement<ushort>(ptr, offs++);
-                _texture.SetPixel(x, info.height - 1 - y, Color.white * (b / 2000.0f));
-            }
-        }
-
+        _texture.LoadRawTextureData(info.data, info.width * info.height * 2);
         _texture.Apply();
     }
 
