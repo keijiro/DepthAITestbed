@@ -2,7 +2,8 @@ Shader "DepthAI/Depth"
 {
     Properties
     {
-        _MainTex("Raw16 Depth Map", 2D) = "black" {}
+        _ColorMap("Color Map", 2D) = "gray" {}
+        _DepthMap("Raw16 Depth Map", 2D) = "black" {}
         _DepthMin("Min Depth (mm)", float) = 350
         _DepthMax("Max Depth (mm)", float) = 1500
     }
@@ -13,7 +14,7 @@ Shader "DepthAI/Depth"
 
 #include "UnityCG.cginc"
 
-sampler2D _MainTex;
+sampler2D _ColorMap, _DepthMap;
 float _DepthMin, _DepthMax;
 
 float3 Viridis(float x)
@@ -44,10 +45,11 @@ void Vertex(float4 position : POSITION,
 float4 Fragment(float4 position : SV_Position,
                 float2 texCoord : TEXCOORD0) : SV_Target
 {
-    float d = tex2D(_MainTex, texCoord) * 65536;
+    float c = tex2D(_ColorMap, texCoord).r;
+    float d = tex2D(_DepthMap, texCoord) * 65536;
     bool mask = d > 0;
     float x = saturate(1 - (d - _DepthMin) / (_DepthMax - _DepthMin));
-    return float4(mask * Viridis(x), 1);
+    return float4(mask * Viridis(x) * c, 1);
 }
 
     ENDCG

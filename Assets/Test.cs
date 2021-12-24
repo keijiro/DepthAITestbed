@@ -4,7 +4,7 @@ using UnityEngine;
 
 public sealed class Test : MonoBehaviour
 {
-    Texture2D _texture;
+    Texture2D _colorMap, _depthMap;
 
     void Start()
       => PluginInitialize();
@@ -12,7 +12,9 @@ public sealed class Test : MonoBehaviour
     void OnDestroy()
     {
         PluginFinalize();
-        if (_texture != null) Destroy(_texture);
+
+        if (_colorMap != null) Destroy(_colorMap);
+        if (_depthMap != null) Destroy(_depthMap);
     }
 
     unsafe void Update()
@@ -20,22 +22,42 @@ public sealed class Test : MonoBehaviour
         var info = new FrameInfo();
         PluginTryGetFrame(out info);
 
-        if (_texture == null)
+        if (_colorMap == null)
         {
-            _texture = new Texture2D(info.width, info.height, TextureFormat.R16, false)
-            { filterMode = FilterMode.Point, wrapMode = TextureWrapMode.Clamp };
-            GetComponent<MeshRenderer>().material.mainTexture = _texture;
+            _colorMap = new Texture2D
+              (info.imageWidth, info.imageHeight, TextureFormat.R8, false)
+              { filterMode = FilterMode.Point };
+
+            GetComponent<MeshRenderer>().material.
+              SetTexture("_ColorMap", _colorMap);
         }
 
-        _texture.LoadRawTextureData(info.data, info.width * info.height * 2);
-        _texture.Apply();
+        if (_depthMap == null)
+        {
+            _depthMap = new Texture2D
+              (info.depthWidth, info.depthHeight, TextureFormat.R16, false)
+              { filterMode = FilterMode.Point };
+
+            GetComponent<MeshRenderer>().material.
+              SetTexture("_DepthMap", _depthMap);
+        }
+
+        _colorMap.LoadRawTextureData
+          (info.imageData, info.imageWidth * info.imageHeight);
+        _colorMap.Apply();
+
+        _depthMap.LoadRawTextureData
+          (info.depthData, info.depthWidth * info.depthHeight * 2); 
+        _depthMap.Apply();
     }
 
     [StructLayout(LayoutKind.Sequential)]
     struct FrameInfo
     {
-        public int width, height;
-        public System.IntPtr data;
+        public int imageWidth, imageHeight;
+        public int depthWidth, depthHeight;
+        public System.IntPtr imageData;
+        public System.IntPtr depthData;
     }
 
     [DllImport("libDepthAITest")]
