@@ -15,7 +15,7 @@ public sealed class Test : MonoBehaviour
         if (_texture != null) Destroy(_texture);
     }
 
-    void Update()
+    unsafe void Update()
     {
         var info = new FrameInfo();
         PluginTryGetFrame(out info);
@@ -26,19 +26,16 @@ public sealed class Test : MonoBehaviour
             GetComponent<MeshRenderer>().material.mainTexture = _texture;
         }
 
-        unsafe
-        {
-            var ptr = (void*)info.data;
-
+        var ptr = (void*)info.data;
         var offs = 0;
+
         for (var y = 0; y < info.height; y++)
         {
             for (var x = 0; x < info.width; x++)
             {
-                var b = UnsafeUtility.ReadArrayElement<byte>(ptr, offs++);
-                _texture.SetPixel(x, info.height - 1 - y, Color.white * (b / info.maxValue));
+                var b = UnsafeUtility.ReadArrayElement<ushort>(ptr, offs++);
+                _texture.SetPixel(x, info.height - 1 - y, Color.white * (b / 2000.0f));
             }
-        }
         }
 
         _texture.Apply();
@@ -47,10 +44,8 @@ public sealed class Test : MonoBehaviour
     [StructLayout(LayoutKind.Sequential)]
     struct FrameInfo
     {
-        public System.IntPtr data;
         public int width, height;
-        public float maxValue;
-        public float padding;
+        public System.IntPtr data;
     }
 
     [DllImport("libDepthAITest")]
