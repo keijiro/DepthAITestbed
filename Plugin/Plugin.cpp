@@ -25,6 +25,7 @@ extern "C" void PluginInitialize()
 
     depth->initialConfig.setConfidenceThreshold(245);
     depth->setLeftRightCheck(true);
+    depth->setSubpixel(true);
 
     cam_l->out.link(depth->left);
     cam_r->out.link(depth->right);
