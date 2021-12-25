@@ -1,0 +1,12 @@
+{
+    "author": "Keijiro Takahashi",
+    "dependencies": { },
+    "description": "Stereo depth plugin with DepthAI",
+    "displayName": "DepthAI Stereo Depth",
+    "keywords": [ "unity" ],
+    "license": "Unlicense",
+    "name": "jp.keijiro.depthai.depthcamera",
+    "unity": "2021.1",
+    "unityRelease": "0f1",
+    "version": "0.0.1"
+}

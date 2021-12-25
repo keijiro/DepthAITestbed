@@ -3,10 +3,10 @@ Desktop.ini
 .DS_Store
 *.swp
 
-/Library
-/Logs
-/Recordings
-/Temp
-/UserSettings
+/URP/Library
+/URP/Logs
+/URP/Recordings
+/URP/Temp
+/URP/UserSettings
 
 /Plugin/build
