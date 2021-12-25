@@ -9,6 +9,7 @@
   "dependencies": {
     "com.unity.render-pipelines.universal": "12.1.2",
     "com.unity.visualeffectgraph": "12.1.2",
+    "jp.keijiro.klak.motion": "1.0.2",
     "jp.keijiro.vfxgraphassets": "1.0.8",
     "jp.keijiro.depthai.depthcamera": "file:../../jp.keijiro.depthai.depthcamera"
   }
