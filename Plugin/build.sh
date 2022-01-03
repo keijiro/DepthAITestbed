@@ -3,7 +3,7 @@
 TARGET="DepthCamera"
 PACKAGE_DIR="../jp.keijiro.depthai.depthcamera/Runtime"
 
-cmake -D'depthai_DIR=../../depthai-core/build' -S. -Bbuild
+cmake "-Ddepthai_DIR=../../depthai-core/build" "-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64" -S. -Bbuild
 cmake --build build
 
 rm ${PACKAGE_DIR}/*.bundle*
