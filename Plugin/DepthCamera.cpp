@@ -12,7 +12,7 @@ std::unique_ptr<dai::Device> _device;
 std::shared_ptr<dai::DataOutputQueue> _monoQueue;
 std::shared_ptr<dai::DataOutputQueue> _depthQueue;
 
-extern "C" void DepthCamera_Initialize()
+extern "C" __declspec(dllexport) void DepthCamera_Initialize()
 {
     dai::Pipeline pipeline;
 
@@ -46,7 +46,7 @@ extern "C" void DepthCamera_Initialize()
     _depthQueue = _device->getOutputQueue("depth", 1, false);
 }
 
-extern "C" int DepthCamera_TryGetFrame(FrameInfo* info)
+extern "C" __declspec(dllexport) int DepthCamera_TryGetFrame(FrameInfo* info)
 {
     auto mono = _monoQueue->get<dai::ImgFrame>();
     auto depth = _depthQueue->get<dai::ImgFrame>();
@@ -59,7 +59,7 @@ extern "C" int DepthCamera_TryGetFrame(FrameInfo* info)
     return 1;
 }
 
-extern "C" void DepthCamera_Finalize()
+extern "C" __declspec(dllexport) void DepthCamera_Finalize()
 {
     _monoQueue.reset();
     _depthQueue.reset();
